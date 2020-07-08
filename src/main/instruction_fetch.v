@@ -24,11 +24,13 @@ module instruction_fetch(
         input clk,
         input reset,
         input [`PC_LENGTH-1:0] pc_with_jump,
+        //TODO ver si el pc_enable está relacionado con el start y no es redundante
         input pc_enable,
         input jump,
         input start,
         input [`INSTRUCTION_LENGTH-1:0] instruction_to_write,
         input [`PC_LENGTH-1:0] address_to_write,
+        
         output reg [`PC_LENGTH-1:0] program_counter,
         output reg [`INSTRUCTION_LENGTH-1:0] instruction
     );
