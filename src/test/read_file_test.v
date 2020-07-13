@@ -20,7 +20,6 @@
 //////////////////////////////////////////////////////////////////////////////////
 `define EOF 32'hFFFF_FFFF
 `define NULL 0
-`define MAX_LINE_LENGTH 1000
 
 module read_file_test;
         reg [31:0] instruction;
@@ -36,21 +35,16 @@ module read_file_test;
             c = $fgetc(file);
             while (c != `EOF)
             begin
-                //if(c== "/")
-                 //   r = $fgets(c, `MAX_LINE_LENGTH, file);
-                //else
-                //begin
-                    r = $ungetc(c, file); 
-                    r = $fscanf(file," %f:\n", real_time);
-                    
+                r = $ungetc(c, file); 
+                r = $fscanf(file," %f:\n", real_time);    
                     if ($realtime > real_time) 
                         $display("Error - absolute time in file is out of order - %t", 
                         real_time); 
                     else 
                         #(real_time - $realtime) 
-                            r = $fscanf(file," %b\n",instruction); 
-                //end // if c else 
-            c = $fgetc(file);       
+                        r = $fscanf(file," %b\n",instruction);
+                        // TODO =  analizar r en función a la cant de casteos
+                c = $fgetc(file);
             end
         $fclose(file);
         end

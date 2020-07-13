@@ -25,7 +25,7 @@ module instruction_fetch_test;
     reg clk;
     reg reset;
     reg [`LENGTH-1:0] pc_with_jump;
-    reg mips_enable, jump, start;
+    reg pc_enable, jump, mips_enable;
     reg [`LENGTH-1:0] instruction_to_write,address_to_write;
     
     wire [`LENGTH-1:0] program_counter,instruction;
@@ -35,9 +35,9 @@ module instruction_fetch_test;
         .clk(clk),
         .reset(reset),
         .pc_with_jump(pc_with_jump),
-        .mips_enable(pc_enable),
+        .pc_enable(pc_enable),
         .jump(jump),
-        .start(start),
+        .mips_enable(mips_enable),
         .instruction_to_write(instruction_to_write),
         .address_to_write(address_to_write),
         
@@ -47,7 +47,7 @@ module instruction_fetch_test;
     initial
     begin
         clk = 1'b1;
-        start=0;
+        mips_enable=0;
         address_to_write = 0;
         instruction_to_write= 0;
         
