@@ -25,14 +25,14 @@ module instruction_fetch(
         input reset,
         input [`PC_LENGTH-1:0] pc_with_jump,
         //TODO ver si el pc_enable está relacionado con el start y no es redundante
-        input pc_enable,
+        input mips_enable,
         input jump,
         input start,
         input [`INSTRUCTION_LENGTH-1:0] instruction_to_write,
         input [`PC_LENGTH-1:0] address_to_write,
         
         output reg [`PC_LENGTH-1:0] program_counter,
-        output reg [`INSTRUCTION_LENGTH-1:0] instruction
+        output wire [`INSTRUCTION_LENGTH-1:0] instruction
     );
     
     //reg [`PC_LENGTH-1:0] program_counter;
@@ -43,7 +43,7 @@ module instruction_fetch(
     always@(posedge clk)
     begin
         //TODO ver si conviene con reset asíncrono
-        if(pc_enable)
+        if(mips_enable)
         begin
             if(reset)
             begin
@@ -63,7 +63,7 @@ module instruction_fetch(
         .w_addr(address_to_write),
         .r_addr(program_counter),
         .w_data(instruction_to_write),
-        .r_data(instruction)
+        .r_data(instruction_mem)
     );
     
 endmodule
