@@ -28,6 +28,7 @@ module instruction_fetch(
         input pc_enable,
         input jump,
         input mips_enable,
+        input wr_memory_instruction_enable,
         input [`INSTRUCTION_LENGTH-1:0] instruction_to_write,
         input [`PC_LENGTH-1:0] address_to_write,
         
@@ -38,12 +39,12 @@ module instruction_fetch(
     wire [`PC_LENGTH-1:0] pc_input,pc_without_jump;
     assign pc_input = jump ? pc_with_jump : pc_without_jump;
     assign pc_without_jump = program_counter+4;
+    assign wr_enable = ~mips_enable && wr_memory_instruction_enable;
     
     always@(posedge clk,posedge reset)
     begin
         //TODO ver si conviene con reset asíncrono
-        //TODO ver si es necesario usar el mips enable o solamente el pc_enable
-        if(pc_enable)
+        if(mips_enable && pc_enable)
         begin
             if(reset)
             begin
@@ -59,7 +60,7 @@ module instruction_fetch(
     reg_file instruction_memory
     (
         .clk(clk),
-        .wr_en(~mips_enable),
+        .wr_en(wr_enable),
         .w_addr(address_to_write),
         .r_addr(program_counter),
         .w_data(instruction_to_write),

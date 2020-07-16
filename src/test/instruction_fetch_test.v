@@ -20,15 +20,19 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 `define LENGTH 32
+`define EOF 32'hFFFF_FFFF
+`define NULL 0
 
 module instruction_fetch_test;
     reg clk;
     reg reset;
     reg [`LENGTH-1:0] pc_with_jump;
-    reg pc_enable, jump, mips_enable;
+    reg pc_enable, jump, mips_enable,wr_memory_instruction_enable;
     reg [`LENGTH-1:0] instruction_to_write,address_to_write;
-    
     wire [`LENGTH-1:0] program_counter,instruction;
+    
+    integer file,c,r;
+    real real_time;
     
     instruction_fetch u_instruction_fetch
     (
@@ -38,6 +42,7 @@ module instruction_fetch_test;
         .pc_enable(pc_enable),
         .jump(jump),
         .mips_enable(mips_enable),
+        .wr_memory_instruction_enable(wr_memory_instruction_enable),
         .instruction_to_write(instruction_to_write),
         .address_to_write(address_to_write),
         
@@ -45,16 +50,30 @@ module instruction_fetch_test;
         .instruction(instruction)
     );
     initial
-    begin
+    begin : reading_file_block
         clk = 1'b1;
         mips_enable=0;
-        address_to_write = 0;
-        instruction_to_write= 0;
+        wr_memory_instruction_enable=1;
         
-        #1
-        address_to_write = 1;
-        instruction_to_write= 1;
-        
+        file = $fopen("/home/alexyh/Escritorio/Arquitectura/MIPS/resource/test/instructions.mem","r");
+        if(file==`NULL)
+            disable reading_file_block;
+                
+        c = $fgetc(file);
+        while (c != `EOF)
+        begin
+            r = $ungetc(c, file); 
+            r = $fscanf(file," %f:\n", real_time);    
+                if ($realtime > real_time) 
+                    $display("Error - absolute time in file is out of order - %t", 
+                    real_time); 
+                else 
+                    #(real_time - $realtime) 
+                    r = $fscanf(file," %b%b\n",instruction_to_write,address_to_write);
+                    // TODO =  analizar r en función a la cant de casteos
+            c = $fgetc(file);
+        end
+    $fclose(file);
     
     end
     

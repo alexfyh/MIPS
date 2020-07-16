@@ -3,15 +3,15 @@
 
 module reg_file
    #(
-              N = 4  // number of bit of address
+              N = 32  // number of bit of address
    )
    (
     input wire clk,
     input wire wr_en,
     input wire [N-1:0] w_addr, r_addr,
-    input wire [`DATA_LENGTH-1-1:0] w_data,
+    input wire [`DATA_LENGTH-1:0] w_data,
     
-    output wire [`DATA_LENGTH-1-1:0] r_data
+    output wire [`DATA_LENGTH-1:0] r_data
    );
 
    // signal declaration
