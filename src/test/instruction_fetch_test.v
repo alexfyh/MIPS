@@ -73,7 +73,18 @@ module instruction_fetch_test;
                     // TODO =  analizar r en función a la cant de casteos
             c = $fgetc(file);
         end
-    $fclose(file);
+        $fclose(file);
+        
+        #5
+        mips_enable=1;
+        wr_memory_instruction_enable=1;
+        pc_enable=1;
+        jump=0;
+        pc_with_jump = 0;
+        reset=1;
+        #5
+        reset=0;
+        
     
     end
     

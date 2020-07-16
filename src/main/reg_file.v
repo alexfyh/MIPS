@@ -15,7 +15,7 @@ module reg_file
    );
 
    // signal declaration
-   reg [`BYTE_LENGTH-1:0] array_reg [2**N-1:0];
+   reg [`BYTE_LENGTH-1:0] array_reg [2**8-1:0];
 
    // body
    // write operation

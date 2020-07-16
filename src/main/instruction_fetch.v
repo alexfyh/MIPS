@@ -32,13 +32,15 @@ module instruction_fetch(
         input [`INSTRUCTION_LENGTH-1:0] instruction_to_write,
         input [`PC_LENGTH-1:0] address_to_write,
         
-        output reg [`PC_LENGTH-1:0] program_counter,
+        output wire [`PC_LENGTH-1:0] program_counter,
         output wire [`INSTRUCTION_LENGTH-1:0] instruction
     );
     
     wire [`PC_LENGTH-1:0] pc_input,pc_without_jump;
+    reg [`PC_LENGTH-1:0] program_counter_reg;
+    assign program_counter = program_counter_reg;
     assign pc_input = jump ? pc_with_jump : pc_without_jump;
-    assign pc_without_jump = program_counter+4;
+    assign pc_without_jump = program_counter_reg+4;
     assign wr_enable = ~mips_enable && wr_memory_instruction_enable;
     
     always@(posedge clk,posedge reset)
@@ -48,11 +50,11 @@ module instruction_fetch(
         begin
             if(reset)
             begin
-                program_counter <= {`PC_LENGTH{1'b0}}; 
+                program_counter_reg <= {`PC_LENGTH{1'b0}}; 
             end
             else
             begin
-                program_counter <= pc_without_jump;
+                program_counter_reg <= pc_without_jump;
             end
         end
     end
@@ -62,9 +64,9 @@ module instruction_fetch(
         .clk(clk),
         .wr_en(wr_enable),
         .w_addr(address_to_write),
-        .r_addr(program_counter),
+        .r_addr(program_counter_reg),
         .w_data(instruction_to_write),
-        .r_data(instruction_mem)
+        .r_data(instruction)
     );
     
 endmodule
